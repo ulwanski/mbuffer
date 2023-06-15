@@ -231,6 +231,9 @@ static void statusThread(void)
  	struct timeval timeout;
 	int maxfd = 0;
 	long tsec,tusec;
+	const char blue[] = "\e[38;5;38m";
+	const char green[] = "\e[38;5;46m";
+	const char yellow[] = "\e[38;5;185m";
   
 	last = Starttime;
 	tsec = (long)StatusInterval;
@@ -291,17 +294,17 @@ static void statusThread(void)
 		last = now;
 		total = (double)((Numout * Blocksize) >> 10);
 		fill = (fill < 0.0) ? 0.0 : fill;
-		b += sprintf(b,"\rin @ ");
+		b += sprintf(b,"\r%sin @ %s", blue, yellow);
 		b += kb2str(b,in);
 		numsender = NumSenders + MainOutOK - Hashers;
-		b += sprintf(b,"B/s, out @ ");
+		b += sprintf(b,"B/s%s [%s%3.0f%%%s] out @ %s", blue, green, fill, blue, yellow);
 		b += kb2str(b, out * numsender);
 		if (numsender != 1)
-			b += sprintf(b,"B/s, %d x ",numsender);
+			b += sprintf(b,"B/s%s, %d x ", blue, numsender);
 		else
-			b += sprintf(b,"B/s, ");
+			b += sprintf(b,"B/s%s, ", blue);
 		b += kb2str(b,total);
-		b += sprintf(b,"B total, buffer %3.0f%% full",fill);
+		b += sprintf(b,"B total\e[39m");
 		if (InSize != 0) {
 			double done = (double)Numout*Blocksize/(double)InSize*100;
 			b += sprintf(b,", %3.0f%% done",done);
